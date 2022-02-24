@@ -18,7 +18,7 @@ from django.urls import path, include   #add include
 from django.conf import settings #add this
 from django.conf.urls.static import static
 from django.contrib.auth import views as auth_views#add this
-
+#hello
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include ('main.urls')),   #add this
