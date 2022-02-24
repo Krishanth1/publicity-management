@@ -1,0 +1,65 @@
+{% load static %}
+
+<!--Navbar 1-->
+<nav class="navbar navbar-expand-md navbar-black bg-white" style="background-color: #efefe8ff;">
+  <div class="navbar-collapse collapse w-100 order-1 order-md-0 dual-collapse2">
+    <ul class="navbar-nav mr-auto"> 
+    </ul>
+  </div>
+  <div class="mx-auto order-0">
+    <a class="navbar-brand m-0" href="/" style="font-size:30px;color: black;">
+      <img src="{% static 'img/logo.jpg' %}" width="35" height="35" alt="logo" style="color: black;"> DROID SERV
+    </a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".dual-collapse2">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+  </div>
+  <div class="navbar-collapse collapse w-100 order-3 dual-collapse2">
+    <ul class="navbar-nav ml-auto">
+      {% if user.is_authenticated %}
+      <li class="nav-item">
+        <a class="nav-link" style="color: rgb(17, 94, 1);" href="/logout">Logout</a>
+      </li>
+      <li class="nav-item">
+        <a class="btn btn-outline-primary" style="color: black;border-color: black;" href="/user">{{user.username|title}}</a>
+      </li>
+      {% else %}
+      <li class="nav-item">
+        <a class="nav-link" style="color: black;" href="/login">Login</a>
+      </li>
+      <li class="nav-item">
+       <a class="btn btn-outline-primary" style="color: rgb(0, 82, 0);border-color: rgb(1, 80, 1);" href="/register">Register</a>
+     </li>
+     {% endif %}
+   </ul>
+ </div>
+</nav>
+
+<!--Navbar 2-->
+<div class="container-fluid sticky-top bg-black" style="background-color: #efefe8ff;">
+  <nav class="container navbar navbar-expand-md navbar-black" style="background-color: #efefe8ff;">
+    <div class="navbar-collapse collapse w-100 order-1 order-md-0 dual-collapse2">
+      <ul class="navbar-nav mr-auto">
+        {% for tag in nav_menu %}
+        <li class="nav-item">
+          <a class="nav-link" style="color: rgb(0, 95, 0);" href="/blog/{{ tag.tag_slug }}">{{ tag.tag_name}}</a>
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
+    <div class="navbar-collapse collapse w-100 order-3 dual-collapse2">
+      <ul class="navbar-nav ml-auto">
+        <li class="nav-item">
+          <a class="nav-link" style="color: rgb(0, 100, 0);" href="/products">Products</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" style="color: rgb(0, 100, 0);" href="/blog/articles">Blog</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" style="color: rgb(0, 100, 0);" href="#contact">Contact</a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+</div>
+

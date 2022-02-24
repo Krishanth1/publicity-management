@@ -1,0 +1,186 @@
+{% extends "main/header.html" %}
+
+{% block content %}
+
+{% load crispy_forms_tags %}
+
+<!--Products-->
+<div class="container py-5">
+    <h1 class="font-weight-bold">Products</h1>
+    <hr>
+    <br>
+    <div class="row">
+        {% for p in page_obj %}
+        <div class="col-sm-12 col-md-6 col-lg-4 pb-4">
+            <div class="card h-100" style="border:none">
+                <img src="{{ p.product_image.url }}" class="card-img-top" alt="{{ p.product_name }}" style="width: auto; height: 200px; object-fit: scale-down;">
+                <div class="card-body">
+                    <h5 class="card-title">{{ p.product_name }}</h5>
+                    <p class="card-text text-muted" style="font-size:12px">{{ p.product_type }}</p>
+                    <p class="card-text">{{ p.product_description }}</p>
+                    <p class="text-muted" style="font-size:12px">Comfort: {{ p.comfort_average }} | Performance: {{ p.performance_average }} | Durability: {{ p.durability_average }}</p>
+                    <div class="row">
+                        <div class="col-3 text-center">
+                            {% if user.is_authenticated %}
+                            <form method="post">
+                                {% csrf_token %}
+                                <input type="hidden" value="{{p.pk}}" name="product_pk">
+                                <button type="submit" class="btn btn-outline-primary" style="font-size:18px;color: rgb(0, 71, 0);border-color: rgb(0, 97, 0);  border-radius: 50%">★</button>
+                            </form>
+                            {% else %}
+                            <a href="/register" class="btn btn-outline-primary" style="font-size:18px;color: rgb(0, 71, 0);border-color: rgb(0, 97, 0);  border-radius: 50%">★</a>
+                            {% endif %}
+                        </div>
+                        <div class="col-4 text-center">
+                            <a class="btn btn-outline-primary" style="color: darkgreen;border-color: darkgreen;" data-toggle="collapse" href="#collapse{{p.pk}}" role="button" aria-expanded="false" aria-controls="collapse{{p.pk}}">Review</a>
+                        </div>
+                        <div class="col-5 text-center">
+                            {% if user.is_authenticated %}
+                            <form method="post">
+                                {% csrf_token %}
+                                <a href=https://www.amazon.in/s?k=gaming+products+along+with+laptops+and+grphic+cards&i=electronics&ref=nb_sb_noss" class="btn btn-warning">Buy now</a>
+                            </form>
+                            {% else %}
+                            <a href="/register" class="btn btn-warning">Buy now</a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                <div class="collapse" id="collapse{{p.pk}}">
+                    <div class="card card-body shadow">
+                        <h6>Product Score: {{ p.product_name }}</h6>
+                        <hr>
+                        <form method="post">
+                            {% csrf_token %}
+                            {% for field in vote_form %}
+                            <div class="row">
+                                <div class="col-10" style="color: darkgreen;" id="slider_{{field.name}}_{{p.pk}}" onclick="sliderUpdate('{{field.name}}', {{p.pk}})">{{field|as_crispy_field}}</div>
+                                <div class="col-2 my-auto">
+                                    <h6 class="text-center" style="color: darkgreen;"><span id="score_{{field.name}}_{{p.pk}}" class=text-primary style="color: darkgreen;">5</span></h6>
+                                </div>
+                            </div>
+                            {% endfor %}
+                            <div class="text-right">
+                                {% if user.is_authenticated %}
+                                <input type="hidden" value="{{p.pk}}" name="product">
+                                <button type="submit" name="score_submit" class="btn btn-outline-primary" style="color: darkgreen;border-color: darkgreen;">Submit Score</button>
+                                {% else %}
+                                <a href="/register" class="btn btn-outline-primary" style="color: darkgreen;border-color: darkgreen;">Register</a>
+                                {% endif %}
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+
+
+    <!--Pagination-->
+    <div class="container">
+        <div class="pagination justify-content-center">
+            <span class="step-links">
+                {% if page_obj.has_previous %}
+                <a href="?page=1">&laquo; first</a>
+                <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+                {% endif %}
+
+                <span class="current">
+                    Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+                </span>
+
+                {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}">next</a>
+                <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+                {% endif %}
+            </span>
+        </div>
+    </div>
+    <!--end of Pagination-->
+
+</div>
+
+
+<script>
+    function sliderUpdate(field, pk) {
+        document.getElementById("score_" + field + "_" + pk).innerText = document.getElementById("slider_" + field + "_" + pk).getElementsByClassName(field)[0].value ;
+    }
+</script>
+
+<style>
+
+    #id_comfort, #id_performance, #id_durability {
+        -webkit-appearance: none;
+        width: 100%;
+        border-radius: 0px;
+        height: 25px;
+        background: #ffff;
+        outline: none;
+        opacity: 1;
+        -webkit-transition: .2s;
+        transition: opacity .2s;
+    }
+
+    #id_comfort::-webkit-slider-runnable-track, #id_performance::-webkit-slider-runnable-track, #id_durability::-webkit-slider-runnable-track {
+      -webkit-appearance: none;
+      width: 100%;
+      height: 15px;
+      border-radius: 0px;
+      background: #fff;
+      outline: none;
+      opacity: 1;
+      -webkit-transition: .2s;
+      transition: opacity .2s;
+  }
+
+
+  #id_comfort::-webkit-slider-thumb, #id_performance::-webkit-slider-thumb, #id_durability::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    border-radius: 0px;
+    appearance: none;
+    width: 25px;
+    height: 25px;
+    background: #007bff;
+    cursor: pointer;
+}
+
+
+#id_comfort::-moz-range-thumb, #id_performance::-moz-range-thumb, #id_durability::-moz-range-thumb {
+    -webkit-appearance: none;
+    border-radius:0px;
+    width: 25px;
+    height: 25px;
+    background: #007bff;
+    cursor: pointer;
+}
+
+#id_comfort::-moz-range-track, #id_performance::-moz-range-track, #id_durability::-moz-range-track {
+    -webkit-appearance: none;
+    border-radius:0px;
+    width: 25px;
+    height: 25px;
+    background: #007bff;
+    cursor: pointer;
+}
+
+
+
+
+
+
+</style>
+
+<script type="text/javascript">
+    (function(d, m){
+        var kommunicateSettings =
+            {"appId":"18a947cae4669895231e93b2ac2d27a4","popupWidget":true,"automaticChatOpenOnNavigation":true};
+        var s = document.createElement("script"); s.type = "text/javascript"; s.async = true;
+        s.src = "https://widget.kommunicate.io/v2/kommunicate.app";
+        var h = document.getElementsByTagName("head")[0]; h.appendChild(s);
+        window.kommunicate = m; m._globals = kommunicateSettings;
+    })(document, window.kommunicate || {});
+/* NOTE : Use web server to view HTML files as real-time update will not work if you directly open the HTML file in the browser. */
+</script>
+{% endblock %}
